@@ -64,18 +64,23 @@ public class OTPAuthenticator implements Authenticator{
         String otp = "";
 
         if (context.getHttpRequest().getDecodedFormParameters().get("mobileNumber") != null) {
+
             mobileNumber = validateMobileNumber(context.getHttpRequest().getDecodedFormParameters().get("mobileNumber").get(0));
 
             if (mobileNumber == null) {
+
+                // challenging mobile number form again in case of invalid mobile number
                 context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS, context.form()
                         .setError(INVALID_MOBILE_NUMBER_ERROR)
                         .createForm(MOBILE_NUMBER_LOGIN_FORM));
 
                 logger.warning(INVALID_MOBILE_NUMBER_ERROR);
+
             } else if (!validateUser(context, mobileNumber)) {
 
                 logger.info(MOBILE_NUMBER_VALIDATED_MESSAGE);
 
+                // challenging mobile number form again in case there is no user registered with entered mobile number
                 context.failureChallenge(AuthenticationFlowError.INVALID_USER, context.form()
                         .setError(USER_NOT_FOUND_ERROR)
                         .createForm(MOBILE_NUMBER_LOGIN_FORM));
@@ -86,18 +91,27 @@ public class OTPAuthenticator implements Authenticator{
         }
 
         else if(context.getHttpRequest().getDecodedFormParameters().get("otp") != null) {
+
             otp = context.getHttpRequest().getDecodedFormParameters().get("otp").get(0);
 
             if (!validateOTP(otp)) {
+
+                // challenging OTP form again in case of invalid OTP
                 context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS, context.form()
                         .setError(INVALID_OTP_ERROR)
                         .createForm(MOBILE_OTP_FORM));
 
                 logger.warning(INVALID_OTP_ERROR);
+
             }
             else {
+
                 logger.info(AUTHENTICATION_SUCCESSFUL_MESSAGE);
+
+                // setting the user in the context for logging in
                 context.setUser(userModel);
+
+                // logging in the user successfully
                 context.success();
             }
 

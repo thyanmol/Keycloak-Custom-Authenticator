@@ -13,13 +13,13 @@ import java.util.List;
 
 public class OTPAuthenticatorFactory implements AuthenticatorFactory, ConfigurableAuthenticatorFactory  {
 
-    public static final String PROVIDER_ID = "otp-custom-anmol-authenticator";
+    public static final String PROVIDER_ID = "my-custom-authenticator";
 
     private static final OTPAuthenticator SINGLETON = new OTPAuthenticator();
 
     @Override
     public String getDisplayType() {
-        return "OTP Authenticator (Anmol)";
+        return "OTP based custom authenticator";
     }
 
     @Override
